@@ -1,0 +1,124 @@
+/* General body styles */
+body {
+  color: black;
+  margin: 0;
+  padding: 0;
+  font-family: 'helvetica', monospace;
+  font-weight: bold;
+  background-color: #f8f9fa; /* Light gray background */
+}
+
+.container {
+  padding-top: 10px;
+}
+
+/* Title styling */
+h1 {
+  text-align: left;
+  size: 10;
+  margin-bottom: 10px;
+  color: #000000;
+}
+.btn-outline-sharp {
+  color: #212529; /* Dark text color */
+  border: 2px solid #000000; /* Dark border */
+  background-color: transparent;
+  padding: 0.375rem 0.75rem;
+  font-weight: 400;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  display: inline-block;
+  text-decoration: none;
+  border-radius: 0px; /* Sharp corners */
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.btn-outline-sharp:hover {
+  color: #fff; /* White text on hover */
+  background-color: #212529; /* Dark background on hover */
+  border-color: #212529; /* Dark border */
+}
+.btn-outline-sharp-danger {
+  color: #c90000; /* Dark text color */
+  border: 2px solid #c90000; /* Dark border */
+  background-color: transparent;
+  padding: 0.375rem 0.75rem;
+  font-weight: 400;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  display: inline-block;
+  text-decoration: none;
+  border-radius: 0px; /* Sharp corners */
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+.btn-outline-sharp-danger:hover {
+  color: #fff; /* White text on hover */
+  background-color: #c90000; /* Dark background on hover */
+  border-color: #c90000; /* Dark border */
+}
+p {
+  size: 10;
+  color: #000000;
+}
+
+/* Painting Grid Layout */
+.painting-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 columns wide */
+  gap: 20px; /* Space between grid items */
+  justify-content: center;
+}
+.small-top-margin {
+  margin-top: 0px; /* Adjust the value as needed */
+}
+.container-bottom-margin {
+  margin-bottom: 5px;
+}
+/* Painting container with fixed aspect ratio and shadow */
+.painting-container {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 2px 8px 8px rgba(0, 0, 0, 0.5);
+  border-radius: 0px;
+  padding-bottom: 125%; /* Maintain 4:5 aspect ratio */
+}
+
+/* Painting images */
+.painting-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures image covers container without distortion */
+}
+.select_class1 {
+  float: left;
+  background-color: white;
+  color: black;
+  border: 2px solid #000000;
+  border-radius: 0px;
+}
+.select_class2 {
+  float: right;
+  background-color: white;
+  color: black;
+  border: 2px solid #000000;
+  border-radius: 0px;
+}
+.button1 {
+  float: left;
+  background-color: white;
+  color: black;
+  border: 2px solid #000000;
+
+}
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .painting-grid {
+    grid-template-columns: 1fr 1fr; /* Maintain 2-wide layout on smaller screens */
+    gap: 15px; /* Adjust gap for smaller screens */
+  }
+}
