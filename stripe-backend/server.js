@@ -7,7 +7,7 @@ const path = require('path'); // For handling file paths
 const app = express();
 const PORT = process.env.PORT || 4242;
 
-app.use(express.static('public'));
+app.use(express.static(__dirname));
 app.use(express.json());
 app.use(cors({ origin: 'https://goosedog.art' })); // Replace with your frontend URL
 
