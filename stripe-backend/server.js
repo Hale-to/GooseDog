@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 4242;
 
 app.use(express.static('public'));
 app.use(express.json());
-app.use(cors({ origin: 'https://your-frontend-url.com' })); // Replace with your frontend URL
+app.use(cors({ origin: 'https://goosedog.art' })); // Replace with your frontend URL
 
 // Function to calculate shipping cost
 function calculateShippingCost(destinationAddress) {
