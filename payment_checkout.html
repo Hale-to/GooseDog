@@ -44,7 +44,7 @@
             background-color: #fff;
             background-clip: padding-box;
             border:2px solid #000000;
-            border-radius: 0px; 
+            border-radius: 0px; /* Matches sharp corners */
             transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         }
     </style>
@@ -71,8 +71,8 @@
                     <label class="form-label-sharp" for="address">address</label>
                     <input type="text" id="address" class="form-input mb-2" required>
 
-                    <label class="form-label-sharp" for="address-line2">address line 2</label>
-                    <input type="text" id="address-line2" class="form-input mb-2">
+                    <label class="form-label-sharp" for="address">address line 2</label>
+                    <input type="text" id="address" class="form-input mb-2" optional>
 
                     <label class="form-label-sharp" for="city">city</label>
                     <input type="text" id="city" class="form-input mb-2" required>
@@ -83,6 +83,13 @@
                     <label class="form-label-sharp" for="zip">zip code</label>
                     <input type="text" id="zip" class="form-input mb-3" required>
 
+                    <h1>payment details</h1>
+
+                    <!-- Stripe Card Input -->
+                    <div id="card-element">
+                        <!-- A Stripe Element will be inserted here. -->
+                    </div>
+
                     <button class="btn-outline-sharp mt-3" id="pay-now">pay now</button>
                 </form>
             </div>
@@ -90,48 +97,89 @@
     </div>
 
     <script>
-        const stripe = Stripe('pk_live_51QPozeCKFaeSO6599NxDP5mpuoisM9b9GzmOUM1E8fEAZIl0B6gcP8JrmLdsxJlUnpsTuJjSqymPoeWyWwt9lZgG00r06wrh7l'); // Replace with your Stripe public key
+        // Initialize Stripe with your public key
+        const stripe = Stripe('pk_test_4TbuO2jfBF5N4dsYBLmjXjJX'); // Replace with your Stripe public key
+
+        const elements = stripe.elements();
+        const card = elements.create('card');
+        card.mount('#card-element');
 
         // Get the cart details from localStorage or some other source
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const cart = JSON.parse(localStorage.getItem('cart'));
+
+        // Shipping cost
         const shippingCost = 10; // Set your shipping cost here
+
+        // Calculate the total amount for the cart and display it
         const cartTotalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        const totalAmount = cartTotalAmount + shippingCost; 
+        const totalAmount = cartTotalAmount + shippingCost; // Add shipping cost to the total
 
         // Populate cart details on the page
         const cartDetailsDiv = document.getElementById('cart-details');
         cart.forEach(item => {
             const itemDiv = document.createElement('div');
-            itemDiv.innerHTML = `${item.name} - ${item.quantity} x $${item.price.toFixed(2)}`;
+            itemDiv.innerHTML = ${item.name} - ${item.quantity} x $${item.price.toFixed(2)};
             cartDetailsDiv.appendChild(itemDiv);
         });
 
+        // Add shipping cost
         const shippingDiv = document.createElement('div');
-        shippingDiv.innerHTML = `<hr><strong>shipping: $${shippingCost.toFixed(2)}</strong>`;
+        shippingDiv.innerHTML = <hr><strong>shipping: $${shippingCost.toFixed(2)}</strong>;
         cartDetailsDiv.appendChild(shippingDiv);
 
+        // Add total amount
         const totalDiv = document.createElement('div');
-        totalDiv.innerHTML = `<hr><strong>total: $${totalAmount.toFixed(2)}</strong>`;
+        totalDiv.innerHTML = <hr><strong>total: $${totalAmount.toFixed(2)}</strong>;
         cartDetailsDiv.appendChild(totalDiv);
 
-        const payNowButton = document.getElementById('pay-now');
+        // Create a payment intent by sending the cart total to your server
+        fetch('/create-payment-intent', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                amount: totalAmount * 100, // Stripe requires amount in cents
+                currency: 'usd', 
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            const clientSecret = data.clientSecret;
 
-        payNowButton.addEventListener('click', async (event) => {
-            event.preventDefault();
+            // Handle form submission and confirm payment
+            const form = document.getElementById('payment-form');
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
 
-            const response = await fetch('/create-checkout-session', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    cart, 
-                    shippingCost 
-                })
+                // Collect shipping details from the form
+                const shippingDetails = {
+                    name: document.getElementById('name').value,
+                    address: {
+                        line1: document.getElementById('address').value,
+                        line2: document.getElementById('address line 2').value,
+                        city: document.getElementById('city').value,
+                        state: document.getElementById('state').value,
+                        postal_code: document.getElementById('zip').value,
+                    }
+                };
+
+                const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+                    payment_method: {
+                        card: card,
+                        billing_details: shippingDetails,
+                    },
+                });
+
+                if (error) {
+                    alert(error.message);
+                } else if (paymentIntent.status === 'succeeded') {
+                    alert('Payment Successful!');
+                    window.location.href = '/success'; 
+                }
             });
-
-            const { sessionId } = await response.json();
-
-            stripe.redirectToCheckout({ sessionId });
-        });
+        })
+        .catch(error => console.error('Error creating payment intent:', error));
     </script>
 </body>
 
