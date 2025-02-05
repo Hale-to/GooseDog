@@ -22,17 +22,23 @@
     }
 
     /* Adjust title row and spacing */
-    .title-row {
+    .title-row, .bottom-button {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px; /* Reduced spacing below the title row */
+      margin-bottom: 10px; /* Reduced spacing */
     }
 
     /* Adjust title styling */
     h1 {
       margin: 0;
-      font-size: 1.5rem; /* Adjust font size if needed to fit better */
+      font-size: 1.5rem;
+    }
+
+    /* Centered bottom button */
+    .bottom-button {
+      justify-content: center;
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -92,6 +98,12 @@
         </a>
       </div>
     </div>
+
+    <!-- Bottom Info Button -->
+    <div class="bottom-button">
+      <a href="info.html" class="btn btn-outline-sharp">info</a>
+    </div>
+
   </div>
 
   <!-- Bootstrap JS CDN -->
