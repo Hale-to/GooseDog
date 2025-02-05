@@ -9,17 +9,18 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* Full-width image */
+    /* Full-width image with padding */
     .bio-image {
-      width: 100%;
+      width: calc(100% - 20px); /* 10px padding on both sides */
       height: auto;
       display: block;
+      margin: 0 auto; /* Center the image */
     }
 
     /* Bio text section */
     .bio-section {
       padding: 40px 20px;
-      text-align: center;
+      text-align: right;
     }
 
     /* Style for the heading */
@@ -39,12 +40,25 @@
 </head>
 <body>
 
-  <!-- Full-Width Image -->
+  <div class="container mt-1">
+    <div class="row align-items-center">
+      <!-- Title "hale and his dogs" on the Left -->
+      <div class="col-auto">
+        <h1>hale and his dogs</h1>
+      </div>
+
+      <!-- Back to Gallery Button on the Right -->
+      <div class="col text-end">
+        <a href="index.html" class="btn btn-outline-sharp mb-2">back to dogs</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full-Width Image with Padding -->
   <img src="stella.JPG" alt="Artist Portrait" class="bio-image">
 
   <!-- Artist Bio Section -->
   <div class="container bio-section">
-    <h1>hale and his dogs</h1>
     <p>
       pictured above: eliza, hale, stella (skinny dog). these dogs were made throughout 2024, 16x20" made with thin layers of acrylic mixed with charcoal. each order is on demand please allow ~2 weeks to print and ship. for questions and commissions please contact haletobin@outlook.com
     </p>
