@@ -141,7 +141,7 @@ async function proceedToCheckout() {
         const { sessionId } = await response.json();
         
         if (sessionId) {
-            const stripe = Stripe("your-publishable-key-here"); // Replace with your Stripe publishable key
+            const stripe = Stripe("pk_live_51QPozeCKFaeSO6599NxDP5mpuoisM9b9GzmOUM1E8fEAZIl0B6gcP8JrmLdsxJlUnpsTuJjSqymPoeWyWwt9lZgG00r06wrh7l"); // Replace with your Stripe publishable key
             await stripe.redirectToCheckout({ sessionId });
         } else {
             alert("Failed to create checkout session.");
