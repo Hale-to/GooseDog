@@ -41,7 +41,6 @@
       <div class="col">
         <!-- Dropdown for selecting print sizes -->
         <select class="form-select select_class1" id="printSize">
-          <option value="4x5">4x5 print</option>
           <option value="8x10">8x10 print</option>
           <option value="16x20">16x20 print</option>
         </select>
@@ -66,7 +65,7 @@
         name: "yellow",
         size: printSize,
         image: "yellow.jpg", // Optional: Image URL for display in cart
-        price: printSize === "4x5" ? 20 : printSize === "8x10" ? 40 : 60 // Example pricing logic
+        price: printSize === "8x10" ? 20 : printSize === "16x20" ? 40 : 40 // Example pricing logic
       };
 
       // Retrieve the current cart from localStorage or initialize as an empty array
