@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const cors = require('cors');
-const path = require('path'); // For handling file paths
+const path = require('path'); 
 
 const app = express();
 const PORT = process.env.PORT || 4242;
@@ -13,42 +13,67 @@ app.use(cors({ origin: 'https://goosedog.art' })); // Replace with your frontend
 
 // Function to calculate shipping cost
 function calculateShippingCost(destinationAddress) {
-  const flatRate = 1000; // Flat shipping fee (in cents)
-  return flatRate;
+  return 1000; // Flat shipping fee in cents ($10.00)
 }
 
-app.post('/create-payment-intent', async (req, res) => {
+// Create a Checkout Session for Stripe
+app.post('/create-checkout-session', async (req, res) => {
   try {
-    const { amount, currency, shippingAddress } = req.body;
+    const { cartItems, shippingAddress } = req.body;
     
-    // Calculate shipping and total amount
+    if (!cartItems || cartItems.length === 0) {
+      return res.status(400).json({ error: "Cart is empty" });
+    }
+
+    // Convert cart items to Stripe line items
+    const lineItems = cartItems.map(item => ({
+      price_data: {
+        currency: "usd",
+        product_data: {
+          name: item.name,
+          images: [item.image],
+        },
+        unit_amount: Math.round(item.price * 100), // Convert to cents
+      },
+      quantity: item.quantity,
+    }));
+
+    // Add shipping as a separate line item
     const shippingCost = calculateShippingCost(shippingAddress);
-    const totalAmount = amount + shippingCost; 
-
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: totalAmount, 
-      currency,
-      automatic_payment_methods: { enabled: true },
-      shipping: {
-        name: shippingAddress.name,
-        address: shippingAddress.address
-      }
+    lineItems.push({
+      price_data: {
+        currency: "usd",
+        product_data: {
+          name: "Shipping",
+        },
+        unit_amount: shippingCost,
+      },
+      quantity: 1,
     });
 
-    res.send({ 
-      clientSecret: paymentIntent.client_secret,
-      shippingCost: shippingCost / 100, 
-      totalAmount: totalAmount / 100  
+    // Create Stripe Checkout session
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: lineItems,
+      mode: "payment",
+      success_url: "https://goosedog.art/success.html",
+      cancel_url: "https://goosedog.art/cart.html",
+      shipping_address_collection: {
+        allowed_countries: ["US", "CA"], // Adjust as needed
+      },
     });
+
+    res.json({ sessionId: session.id });
+
   } catch (error) {
-    console.error('Stripe Error:', error);
-    res.status(400).send({ error: error.message });
+    console.error("Stripe Checkout Error:", error);
+    res.status(500).json({ error: error.message });
   }
 });
 
+// Serve success page
 app.get('/success', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'success.html')); // Serves /public/success.html
+  res.sendFile(path.join(__dirname, 'public', 'success.html'));
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
